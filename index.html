@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>たんぱく質</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#f5f2ec">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #f5f2ec;
+            --bg-warm: #efeade;
+            --card: #fffefa;
+            --card-shadow: rgba(120, 100, 70, 0.06);
+            --border: #e4ddd2;
+            --border-light: #ede8df;
+
+            --text: #3d3832;
+            --text-secondary: #7a7168;
+            --text-muted: #a69e94;
+            --text-faint: #c4bdb4;
+
+            --sage: #6b8f71;
+            --sage-light: #dce8dd;
+            --sage-bg: #eef4ef;
+            --terracotta: #c4856a;
+            --terracotta-light: #f2e0d6;
+            --clay: #b07d5e;
+
+            --progress-bg: #e8e2d8;
+            --progress-fill: #6b8f71;
+            --progress-over: #c4856a;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Zen Kaku Gothic New', 'Hiragino Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 18px 100px;
+        }
+
+        /* ===== Header ===== */
+        .header {
+            text-align: center;
+            padding: 30px 0 8px;
+        }
+        .header h1 {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 17px;
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: var(--text-secondary);
+        }
+
+        /* ===== Greeting ===== */
+        .greeting {
+            text-align: center;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+        .greeting-text {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.9;
+        }
+
+        /* ===== Progress Ring ===== */
+        .progress-section {
+            text-align: center;
+            padding: 20px 0 24px;
+        }
+        .progress-ring-wrap {
+            position: relative;
+            display: inline-block;
+            width: 160px;
+            height: 160px;
+        }
+        .progress-ring-wrap svg {
+            transform: rotate(-90deg);
+        }
+        .progress-track {
+            fill: none;
+            stroke: var(--progress-bg);
+            stroke-width: 10;
+        }
+        .progress-fill-arc {
+            fill: none;
+            stroke: var(--progress-fill);
+            stroke-width: 10;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 0.5s ease, stroke 0.3s;
+        }
+        .progress-fill-arc.over { stroke: var(--terracotta); }
+        .progress-center {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .progress-current {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 32px;
+            font-weight: 400;
+            color: var(--text);
+            line-height: 1.1;
+        }
+        .progress-unit {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        .progress-target {
+            font-size: 11px;
+            color: var(--text-faint);
+            margin-top: 2px;
+        }
+        .progress-comment {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            min-height: 20px;
+        }
+
+        /* ===== Meal Sections ===== */
+        .meal-section {
+            margin-bottom: 20px;
+        }
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 0 2px;
+        }
+        .meal-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+        }
+        .meal-subtotal {
+            font-size: 12px;
+            color: var(--sage);
+            font-weight: 500;
+        }
+
+        /* ===== Food Cards ===== */
+        .food-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .food-card {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            box-shadow: 0 1px 3px var(--card-shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .food-card:active {
+            transform: scale(0.96);
+            background: var(--sage-bg);
+            border-color: var(--sage);
+        }
+        .food-card.selected {
+            background: var(--sage-bg);
+            border-color: var(--sage);
+        }
+        .food-name {
+            font-size: 13px;
+            color: var(--text);
+        }
+        .food-protein {
+            font-size: 11px;
+            color: var(--sage);
+            white-space: nowrap;
+        }
+
+        /* ===== Set Cards ===== */
+        .set-section {
+            margin-bottom: 20px;
+        }
+        .set-card {
+            background: var(--sage-bg);
+            border: 1px solid var(--sage);
+            border-radius: 10px;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .set-card:active {
+            transform: scale(0.97);
+            background: var(--sage-light);
+        }
+        .set-card-left {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .set-card-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sage);
+        }
+        .set-card-items {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        .set-card-protein {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--sage);
+            white-space: nowrap;
+        }
+
+        /* ===== Today's Log ===== */
+        .log-section {
+            margin-top: 24px;
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+        }
+        .log-title {
+            font-size: 12px;
+            color: var(--text-muted);
+            letter-spacing: 0.08em;
+            margin-bottom: 10px;
+        }
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+        .log-item-name { color: var(--text); }
+        .log-item-protein { color: var(--sage); font-weight: 500; font-size: 12px; }
+        .log-item-remove {
+            background: none;
+            border: none;
+            color: var(--text-faint);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            margin-left: 8px;
+        }
+        .log-item-remove:hover { color: var(--terracotta); }
+        .log-empty {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-faint);
+            font-size: 12px;
+        }
+
+        /* ===== Evening Summary ===== */
+        .summary-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px var(--card-shadow);
+        }
+        .summary-text {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 2;
+        }
+
+        /* ===== Custom Add ===== */
+        .custom-section {
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+        }
+        .custom-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .custom-input {
+            flex: 1;
+            padding: 9px 12px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--sage);
+        }
+        .custom-input::placeholder { color: var(--text-faint); }
+
+        .btn {
+            padding: 9px 16px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 12px;
+            font-family: inherit;
+            transition: all 0.15s;
+        }
+        .btn:hover { border-color: var(--sage); color: var(--text); }
+        .btn-sage {
+            background: var(--sage-bg);
+            border-color: var(--sage);
+            color: var(--sage);
+        }
+
+        /* ===== Settings ===== */
+        .settings-section {
+            margin-top: 24px;
+            border-top: 1px solid var(--border);
+            padding-top: 18px;
+        }
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+        .settings-label {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .settings-value {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .settings-value input {
+            width: 60px;
+            padding: 6px 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            font-size: 13px;
+            text-align: center;
+            font-family: inherit;
+        }
+        .settings-value input:focus { outline: none; border-color: var(--sage); }
+        .settings-unit { font-size: 12px; color: var(--text-faint); }
+
+        /* ===== History ===== */
+        .history-item {
+            background: var(--card);
+            border: 1px solid var(--border-light);
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            box-shadow: 0 1px 3px var(--card-shadow);
+        }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+        .history-date { font-size: 13px; color: var(--text); }
+        .history-total { font-size: 13px; color: var(--sage); font-weight: 500; }
+        .history-items { font-size: 11px; color: var(--text-muted); line-height: 1.7; }
+
+        /* ===== Tabs ===== */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 16px;
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            z-index: 10;
+        }
+        .tab {
+            flex: 1;
+            padding: 12px 8px;
+            background: none;
+            border: none;
+            color: var(--text-faint);
+            cursor: pointer;
+            font-size: 12px;
+            font-family: inherit;
+            letter-spacing: 0.06em;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            color: var(--text);
+            border-bottom-color: var(--sage);
+        }
+
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            max-width: 88%;
+            background: var(--card);
+            border: 1px solid var(--sage);
+            border-radius: 10px;
+            padding: 12px 22px;
+            font-family: 'Noto Serif JP', serif;
+            color: var(--text-secondary);
+            font-size: 13px;
+            box-shadow: 0 4px 16px rgba(107, 143, 113, 0.15);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 100;
+            text-align: center;
+        }
+        .toast.show { opacity: 1; }
+
+        /* ===== Mini Progress Bar (sticky) ===== */
+        .mini-progress {
+            position: sticky;
+            top: 42px;
+            z-index: 9;
+            background: var(--bg);
+            padding: 8px 0 10px;
+            display: none;
+        }
+        .mini-progress.visible { display: block; }
+        .mini-progress-inner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mini-progress-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--progress-bg);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .mini-progress-fill {
+            height: 100%;
+            background: var(--progress-fill);
+            border-radius: 3px;
+            transition: width 0.4s ease;
+        }
+        .mini-progress-fill.over { background: var(--progress-over); }
+        .mini-progress-text {
+            font-family: 'Noto Serif JP', serif;
+            font-size: 13px;
+            color: var(--text);
+            white-space: nowrap;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .file-input { display: none; }
+
+        @media (max-width: 480px) {
+            .container { padding: 0 14px 100px; }
+        }
+    </style>
+</head>
+<body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const SECRET_KEY = "1122";
+        const entered = prompt("認証キーを入力してください:");
+        if (entered !== SECRET_KEY) {
+            document.body.innerHTML = '<div style="padding:60px;text-align:center;color:#a69e94;">認証に失敗した。</div>';
+            throw new Error("認証失敗");
+        }
+    });
+</script>
+
+<div class="container">
+    <div class="header">
+        <h1>たんぱく質</h1>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" onclick="switchTab('today')">今日</button>
+        <button class="tab" onclick="switchTab('history')">記録</button>
+        <button class="tab" onclick="switchTab('settings')">設定</button>
+    </div>
+
+    <!-- ===== 今日 ===== -->
+    <div id="today-panel" class="panel active">
+        <div class="mini-progress" id="mini-progress">
+            <div class="mini-progress-inner">
+                <div class="mini-progress-bar">
+                    <div class="mini-progress-fill" id="mini-progress-fill"></div>
+                </div>
+                <div class="mini-progress-text" id="mini-progress-text">0g</div>
+            </div>
+        </div>
+
+        <div class="greeting">
+            <div class="greeting-text" id="greeting"></div>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-ring-wrap">
+                <svg width="160" height="160">
+                    <circle class="progress-track" cx="80" cy="80" r="68" />
+                    <circle class="progress-fill-arc" id="progress-arc" cx="80" cy="80" r="68" />
+                </svg>
+                <div class="progress-center">
+                    <div class="progress-current" id="progress-current">0</div>
+                    <div class="progress-unit">g</div>
+                    <div class="progress-target" id="progress-target"></div>
+                </div>
+            </div>
+            <div class="progress-comment" id="progress-comment"></div>
+        </div>
+
+        <!-- Sets -->
+        <div id="set-section" class="set-section"></div>
+
+        <!-- Meal sections generated by JS -->
+        <div id="meal-sections"></div>
+
+        <!-- Today's log -->
+        <div class="log-section">
+            <div class="log-title" style="display:flex;justify-content:space-between;align-items:center;">
+                <span>今日の記録</span>
+                <button class="btn" style="padding:4px 10px;font-size:11px;" onclick="resetToday()" id="reset-today-btn">リセット</button>
+            </div>
+            <div id="today-log"></div>
+        </div>
+
+        <!-- Custom add -->
+        <div class="custom-section">
+            <div class="log-title">その他を追加</div>
+            <div class="custom-row">
+                <input type="text" id="custom-name" class="custom-input" placeholder="食品名">
+                <input type="number" id="custom-protein" class="custom-input" placeholder="g" style="width:70px;flex:none;" inputmode="decimal">
+                <button class="btn btn-sage" onclick="addCustom()">追加</button>
+            </div>
+        </div>
+
+        <div id="summary-area"></div>
+    </div>
+
+    <!-- ===== 記録 ===== -->
+    <div id="history-panel" class="panel">
+        <div id="history-list"></div>
+        <div class="settings-section">
+            <div class="log-title">データ管理</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn" onclick="exportCSV()">CSV書き出し</button>
+                <button class="btn" onclick="document.getElementById('import-file').click()">CSV読み込み</button>
+                <input type="file" id="import-file" class="file-input" accept=".csv" onchange="importCSV(event)">
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== 設定 ===== -->
+    <div id="settings-panel" class="panel">
+        <div class="log-title">目標設定</div>
+        <div class="settings-row">
+            <span class="settings-label">1日の目標（下限）</span>
+            <div class="settings-value">
+                <input type="number" id="target-min" value="85" onchange="saveSettings()">
+                <span class="settings-unit">g</span>
+            </div>
+        </div>
+        <div class="settings-row">
+            <span class="settings-label">1日の目標（上限）</span>
+            <div class="settings-value">
+                <input type="number" id="target-max" value="106" onchange="saveSettings()">
+                <span class="settings-unit">g</span>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="log-title">セットの管理</div>
+            <div id="set-manager"></div>
+            <div style="margin-top:12px;border:1px solid var(--border);border-radius:8px;padding:14px;">
+                <div style="margin-bottom:8px;">
+                    <input type="text" id="new-set-name" class="custom-input" placeholder="セット名（例：朝食セット）" style="width:100%;">
+                </div>
+                <div id="new-set-items"></div>
+                <div class="custom-row" style="margin-top:8px;">
+                    <input type="text" id="new-set-item-name" class="custom-input" placeholder="食品名">
+                    <input type="number" id="new-set-item-protein" class="custom-input" placeholder="g" style="width:70px;flex:none;" inputmode="decimal" step="0.1">
+                    <button class="btn" onclick="addNewSetItem()">＋</button>
+                </div>
+                <button class="btn btn-sage" style="width:100%;margin-top:8px;" onclick="createNewSet()">セットを作成</button>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <div class="log-title">食品カードの管理</div>
+            <div id="food-manager"></div>
+            <div class="custom-row" style="margin-top:12px;">
+                <input type="text" id="new-food-name" class="custom-input" placeholder="食品名">
+                <input type="number" id="new-food-protein" class="custom-input" placeholder="g" style="width:70px;flex:none;" inputmode="decimal" step="0.1">
+                <select id="new-food-meal" class="custom-input" style="flex:none;width:80px;">
+                    <option value="朝食">朝食</option>
+                    <option value="昼食">昼食</option>
+                    <option value="補食">補食</option>
+                    <option value="夕食">夕食</option>
+                    <option value="運動後">運動後</option>
+                </select>
+                <button class="btn btn-sage" onclick="addPresetFood()">追加</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    /* ========================================
+       Default Foods
+    ======================================== */
+    const DEFAULT_FOODS = [
+        { name: 'ゆで卵', protein: 6, meal: '朝食' },
+        { name: '食パン（全粒粉）', protein: 4, meal: '朝食' },
+        { name: '牛乳 200ml', protein: 6.6, meal: '朝食' },
+        { name: '豆乳 200ml', protein: 7, meal: '朝食' },
+
+        { name: '昼プロテイン', protein: 25, meal: '昼食' },
+        { name: 'みかん', protein: 0.5, meal: '昼食' },
+        { name: 'デーツ+プルーン', protein: 0.5, meal: '昼食' },
+
+        { name: 'ヨーグルト', protein: 3.5, meal: '補食' },
+        { name: 'アーモンド 5粒', protein: 1, meal: '補食' },
+
+        { name: '豆腐 半丁', protein: 9.6, meal: '夕食' },
+        { name: '納豆 1パック', protein: 8, meal: '夕食' },
+        { name: '夕食：肉/魚メイン', protein: 20, meal: '夕食' },
+        { name: '夕食：丼/麺', protein: 12, meal: '夕食' },
+        { name: '夕食：揚げ物', protein: 15, meal: '夕食' },
+
+        { name: 'ザバス ウェイトダウン', protein: 20, meal: '運動後' },
+        { name: 'ザバス エリート', protein: 20, meal: '運動後' },
+    ];
+
+    const DEFAULT_SETS = [
+        {
+            name: '朝食セット',
+            items: [
+                { name: 'ゆで卵', protein: 6, meal: '朝食' },
+                { name: '食パン（全粒粉）', protein: 4, meal: '朝食' },
+                { name: '牛乳 200ml', protein: 6.6, meal: '朝食' },
+            ]
+        },
+        {
+            name: '昼食セット',
+            items: [
+                { name: '昼プロテイン', protein: 25, meal: '昼食' },
+                { name: 'みかん', protein: 0.5, meal: '昼食' },
+            ]
+        },
+    ];
+
+    const MEAL_ORDER = ['朝食', '昼食', '補食', '夕食', '運動後'];
+
+    /* ========================================
+       Greetings & Comments
+    ======================================== */
+    const GREETINGS = {
+        morning: [
+            "おはよう。今日も身体に良いものを摂ろう。",
+            "朝の一口が、一日の土台を作る。",
+            "おはよう。まずは朝食から始めよう。",
+        ],
+        afternoon: [
+            "昼を過ぎた。午後のたんぱく質を忘れるな。",
+            "午後か。補食の時間だ。",
+        ],
+        evening: [
+            "夕方だ。今日はどれくらい摂れたか、確認しよう。",
+            "夕食の前に、ここまでの積み上げを見てみよう。",
+        ],
+        night: [
+            "今日一日の食事、振り返ってみよう。",
+            "夜か。明日に向けて、今日を記録しておこう。",
+        ],
+    };
+
+    const PROGRESS_COMMENTS = {
+        zero: "まだ何も記録されていない。最初の一口から。",
+        low: "まだ序盤だ。焦らず積み上げよう。",
+        quarter: "動き始めた。この調子で。",
+        half: "折り返しを超えた。順調だ。",
+        threequarter: "あと少し。目標が見えてきた。",
+        reached: "目標に届いた。今日は十分だ。よくやった。",
+        over: "上限を超えた。摂りすぎに注意。",
+    };
+
+    const ADD_COMMENTS = [
+        "着実に積み上がっている。",
+        "良い選択だ。",
+        "身体が喜ぶ一口。",
+        "一つひとつが力になる。",
+    ];
+
+    const EVENING_COMMENTS = {
+        reached: [
+            "今日は目標に届いた。身体に必要なものを、きちんと届けられた一日だ。",
+            "十分なたんぱく質を摂れた。筋肉は今夜、確実に回復している。",
+        ],
+        close: [
+            "目標にはあと少し届かなかったが、意識して食べた一日だ。それだけで違う。",
+            "惜しい。しかし、記録して把握できていること自体に意味がある。",
+        ],
+        low: [
+            "今日は少なかった。しかし、把握できているなら明日で調整が効く。責めるな。",
+            "足りなかった日もある。明日、少し意識すればよい。",
+        ],
+    };
+
+    /* ========================================
+       State & Storage
+    ======================================== */
+    let todayLog = [];
+    let foods = [];
+    let sets = [];
+    let settings = { targetMin: 85, targetMax: 106 };
+    let toastTimeout = null;
+
+    function getJSTDate() {
+        const now = new Date();
+        const jst = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
+        const y = jst.getFullYear();
+        const m = String(jst.getMonth() + 1).padStart(2, '0');
+        const d = String(jst.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    function getTimeOfDay() {
+        const now = new Date();
+        const h = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' })).getHours();
+        if (h >= 5 && h < 11) return 'morning';
+        if (h >= 11 && h < 17) return 'afternoon';
+        if (h >= 17 && h < 21) return 'evening';
+        return 'night';
+    }
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    function loadData() {
+        // Foods
+        const saved = localStorage.getItem('proteinFoods');
+        foods = saved ? JSON.parse(saved) : [...DEFAULT_FOODS];
+
+        // Sets
+        const savedSets = localStorage.getItem('proteinSets');
+        sets = savedSets ? JSON.parse(savedSets) : DEFAULT_SETS.map(s => ({...s, items: [...s.items]}));
+
+        // Settings
+        const s = localStorage.getItem('proteinSettings');
+        if (s) settings = JSON.parse(s);
+
+        // Today's log
+        const allLogs = JSON.parse(localStorage.getItem('proteinLogs') || '{}');
+        todayLog = allLogs[getJSTDate()] || [];
+
+        document.getElementById('target-min').value = settings.targetMin;
+        document.getElementById('target-max').value = settings.targetMax;
+    }
+
+    function saveFoods() { localStorage.setItem('proteinFoods', JSON.stringify(foods)); }
+    function saveSets() { localStorage.setItem('proteinSets', JSON.stringify(sets)); }
+
+    function saveSettings() {
+        settings.targetMin = parseInt(document.getElementById('target-min').value) || 85;
+        settings.targetMax = parseInt(document.getElementById('target-max').value) || 106;
+        localStorage.setItem('proteinSettings', JSON.stringify(settings));
+        renderProgress();
+    }
+
+    function saveTodayLog() {
+        const allLogs = JSON.parse(localStorage.getItem('proteinLogs') || '{}');
+        allLogs[getJSTDate()] = todayLog;
+        localStorage.setItem('proteinLogs', JSON.stringify(allLogs));
+    }
+
+    function showToast(text) {
+        const el = document.getElementById('toast');
+        if (toastTimeout) clearTimeout(toastTimeout);
+        el.textContent = text;
+        el.classList.add('show');
+        toastTimeout = setTimeout(() => { el.classList.remove('show'); }, 3000);
+    }
+
+    function formatDateShort(dateStr) {
+        const d = new Date(dateStr + 'T00:00:00+09:00');
+        const m = d.getMonth() + 1;
+        const day = d.getDate();
+        const w = ['日','月','火','水','木','金','土'][d.getDay()];
+        return `${m}/${day}（${w}）`;
+    }
+
+    /* ========================================
+       Rendering
+    ======================================== */
+    function getTodayTotal() {
+        return todayLog.reduce((sum, item) => sum + item.protein, 0);
+    }
+
+    function renderGreeting() {
+        document.getElementById('greeting').textContent = pick(GREETINGS[getTimeOfDay()]);
+    }
+
+    function renderProgress() {
+        const total = getTodayTotal();
+        const target = settings.targetMin;
+        const ratio = target > 0 ? total / target : 0;
+        const pct = Math.min(ratio * 100, 100);
+
+        // Ring arc
+        const circumference = 2 * Math.PI * 68;
+        const arc = document.getElementById('progress-arc');
+        arc.style.strokeDasharray = circumference;
+        arc.style.strokeDashoffset = circumference * (1 - Math.min(ratio, 1));
+        arc.classList.toggle('over', total > settings.targetMax);
+
+        // Numbers
+        document.getElementById('progress-current').textContent = Math.round(total * 10) / 10;
+        document.getElementById('progress-target').textContent = `目標 ${settings.targetMin}〜${settings.targetMax}g`;
+
+        // Comment
+        let commentKey;
+        if (total === 0) commentKey = 'zero';
+        else if (total > settings.targetMax) commentKey = 'over';
+        else if (total >= settings.targetMin) commentKey = 'reached';
+        else if (ratio >= 0.75) commentKey = 'threequarter';
+        else if (ratio >= 0.5) commentKey = 'half';
+        else if (ratio >= 0.25) commentKey = 'quarter';
+        else commentKey = 'low';
+
+        document.getElementById('progress-comment').textContent = PROGRESS_COMMENTS[commentKey];
+
+        // Mini progress bar
+        const miniFill = document.getElementById('mini-progress-fill');
+        const miniText = document.getElementById('mini-progress-text');
+        if (miniFill && miniText) {
+            miniFill.style.width = pct + '%';
+            miniFill.classList.toggle('over', total > settings.targetMax);
+            miniText.textContent = `${Math.round(total * 10) / 10}g / ${target}g`;
+        }
+    }
+
+    // Show mini bar when ring scrolls out of view
+    function setupScrollObserver() {
+        const ring = document.querySelector('.progress-section');
+        const mini = document.getElementById('mini-progress');
+        if (!ring || !mini) return;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                mini.classList.toggle('visible', !entry.isIntersecting);
+            });
+        }, { threshold: 0, rootMargin: '-48px 0px 0px 0px' });
+
+        observer.observe(ring);
+    }
+
+    function renderSets() {
+        const container = document.getElementById('set-section');
+        if (sets.length === 0) { container.innerHTML = ''; return; }
+
+        let html = `<div class="meal-header"><div class="meal-title">セット（ワンタップ）</div></div>`;
+        sets.forEach((set, i) => {
+            const total = set.items.reduce((s, item) => s + item.protein, 0);
+            const names = set.items.map(item => item.name).join(' + ');
+            html += `
+                <div class="set-card" onclick="addSetItems(${i})">
+                    <div class="set-card-left">
+                        <div class="set-card-name">${set.name}</div>
+                        <div class="set-card-items">${names}</div>
+                    </div>
+                    <div class="set-card-protein">${Math.round(total * 10) / 10}g</div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    function addSetItems(setIndex) {
+        const set = sets[setIndex];
+        if (!set) return;
+        set.items.forEach(item => {
+            todayLog.push({ name: item.name, protein: item.protein, meal: item.meal || '', time: new Date().toISOString() });
+        });
+        saveTodayLog();
+        renderProgress();
+        renderMealSections();
+        renderTodayLog();
+        renderSummary();
+        const total = set.items.reduce((s, i) => s + i.protein, 0);
+        showToast(`${set.name}（${Math.round(total * 10) / 10}g）を記録した。`);
+    }
+
+    function renderMealSections() {
+        const container = document.getElementById('meal-sections');
+        const logByMeal = {};
+        todayLog.forEach(item => {
+            if (!logByMeal[item.meal]) logByMeal[item.meal] = 0;
+            logByMeal[item.meal] += item.protein;
+        });
+
+        let html = '';
+        MEAL_ORDER.forEach(meal => {
+            const mealFoods = foods.filter(f => f.meal === meal);
+            if (mealFoods.length === 0) return;
+
+            const subtotal = logByMeal[meal] || 0;
+
+            html += `<div class="meal-section">
+                <div class="meal-header">
+                    <div class="meal-title">${meal}</div>
+                    ${subtotal > 0 ? `<div class="meal-subtotal">${Math.round(subtotal * 10) / 10}g</div>` : ''}
+                </div>
+                <div class="food-grid">
+                    ${mealFoods.map(f => `
+                        <div class="food-card" onclick="addFood('${f.name.replace(/'/g, "\\'")}', ${f.protein}, '${f.meal}')">
+                            <span class="food-name">${f.name}</span>
+                            <span class="food-protein">${f.protein}g</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function renderTodayLog() {
+        const container = document.getElementById('today-log');
+        const resetBtn = document.getElementById('reset-today-btn');
+        if (resetBtn) resetBtn.style.display = todayLog.length > 0 ? 'inline-block' : 'none';
+
+        if (todayLog.length === 0) {
+            container.innerHTML = '<div class="log-empty">まだ何も記録されていない。</div>';
+            return;
+        }
+
+        container.innerHTML = todayLog.map((item, i) => `
+            <div class="log-item">
+                <span class="log-item-name">${item.name}</span>
+                <span>
+                    <span class="log-item-protein">${item.protein}g</span>
+                    <button class="log-item-remove" onclick="removeLog(${i})">✕</button>
+                </span>
+            </div>
+        `).join('');
+    }
+
+    function renderSummary() {
+        const area = document.getElementById('summary-area');
+        const tod = getTimeOfDay();
+        if (tod !== 'evening' && tod !== 'night') { area.innerHTML = ''; return; }
+        if (todayLog.length === 0) { area.innerHTML = ''; return; }
+
+        const total = getTodayTotal();
+        let key;
+        if (total >= settings.targetMin) key = 'reached';
+        else if (total >= settings.targetMin * 0.7) key = 'close';
+        else key = 'low';
+
+        area.innerHTML = `
+            <div class="summary-box">
+                <div class="summary-text">${pick(EVENING_COMMENTS[key])}</div>
+            </div>
+        `;
+    }
+
+    function renderFoodManager() {
+        const container = document.getElementById('food-manager');
+        container.innerHTML = MEAL_ORDER.map(meal => {
+            const mealFoods = foods.filter(f => f.meal === meal);
+            if (mealFoods.length === 0) return '';
+            return `
+                <div style="margin-bottom:12px;">
+                    <div class="meal-title" style="margin-bottom:6px;">${meal}</div>
+                    ${mealFoods.map((f, i) => {
+                        const idx = foods.indexOf(f);
+                        return `<div class="log-item">
+                            <span class="log-item-name">${f.name} (${f.protein}g)</span>
+                            <button class="log-item-remove" onclick="removePresetFood(${idx})">✕</button>
+                        </div>`;
+                    }).join('')}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function renderAll() {
+        renderGreeting();
+        renderProgress();
+        renderSets();
+        renderMealSections();
+        renderTodayLog();
+        renderSummary();
+    }
+
+    /* ========================================
+       Actions
+    ======================================== */
+    function addFood(name, protein, meal) {
+        todayLog.push({ name, protein, meal, time: new Date().toISOString() });
+        saveTodayLog();
+        renderProgress();
+        renderMealSections();
+        renderTodayLog();
+        renderSummary();
+        showToast(pick(ADD_COMMENTS));
+    }
+
+    function addCustom() {
+        const name = document.getElementById('custom-name').value.trim();
+        const protein = parseFloat(document.getElementById('custom-protein').value);
+        if (!name || isNaN(protein)) { showToast('食品名とたんぱく質量を入力してくれ。'); return; }
+        todayLog.push({ name, protein, meal: 'その他', time: new Date().toISOString() });
+        saveTodayLog();
+        document.getElementById('custom-name').value = '';
+        document.getElementById('custom-protein').value = '';
+        renderProgress();
+        renderTodayLog();
+        renderSummary();
+        showToast(pick(ADD_COMMENTS));
+    }
+
+    function removeLog(index) {
+        todayLog.splice(index, 1);
+        saveTodayLog();
+        renderAll();
+    }
+
+    function resetToday() {
+        if (!confirm('今日の記録をすべて削除する。よいな？')) return;
+        todayLog = [];
+        saveTodayLog();
+        renderAll();
+        showToast('今日の記録をリセットした。');
+    }
+
+    function addPresetFood() {
+        const name = document.getElementById('new-food-name').value.trim();
+        const protein = parseFloat(document.getElementById('new-food-protein').value);
+        const meal = document.getElementById('new-food-meal').value;
+        if (!name || isNaN(protein)) { showToast('食品名とたんぱく質量を入力してくれ。'); return; }
+        foods.push({ name, protein, meal });
+        saveFoods();
+        document.getElementById('new-food-name').value = '';
+        document.getElementById('new-food-protein').value = '';
+        renderMealSections();
+        renderFoodManager();
+        showToast(`「${name}」を${meal}に追加した。`);
+    }
+
+    function removePresetFood(index) {
+        const name = foods[index].name;
+        foods.splice(index, 1);
+        saveFoods();
+        renderMealSections();
+        renderFoodManager();
+        showToast(`「${name}」を削除した。`);
+    }
+
+    /* ========================================
+       Set Management
+    ======================================== */
+    let newSetItems = [];
+
+    function renderSetManager() {
+        const container = document.getElementById('set-manager');
+        if (sets.length === 0) {
+            container.innerHTML = '<div class="log-empty">セットなし</div>';
+            return;
+        }
+        container.innerHTML = sets.map((set, i) => {
+            const total = set.items.reduce((s, item) => s + item.protein, 0);
+            const names = set.items.map(item => `${item.name}(${item.protein}g)`).join('、');
+            return `
+                <div class="log-item" style="flex-direction:column;align-items:stretch;gap:4px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span class="log-item-name" style="font-weight:500;">${set.name}（${Math.round(total*10)/10}g）</span>
+                        <button class="log-item-remove" onclick="removeSet(${i})">✕</button>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-muted);">${names}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function addNewSetItem() {
+        const name = document.getElementById('new-set-item-name').value.trim();
+        const protein = parseFloat(document.getElementById('new-set-item-protein').value);
+        if (!name || isNaN(protein)) { showToast('食品名とたんぱく質量を入力してくれ。'); return; }
+        newSetItems.push({ name, protein });
+        document.getElementById('new-set-item-name').value = '';
+        document.getElementById('new-set-item-protein').value = '';
+        renderNewSetItems();
+    }
+
+    function removeNewSetItem(index) {
+        newSetItems.splice(index, 1);
+        renderNewSetItems();
+    }
+
+    function renderNewSetItems() {
+        const container = document.getElementById('new-set-items');
+        if (newSetItems.length === 0) { container.innerHTML = ''; return; }
+        container.innerHTML = newSetItems.map((item, i) => `
+            <div class="log-item" style="padding:6px 10px;margin-bottom:4px;">
+                <span style="font-size:12px;">${item.name}（${item.protein}g）</span>
+                <button class="log-item-remove" onclick="removeNewSetItem(${i})">✕</button>
+            </div>
+        `).join('');
+    }
+
+    function createNewSet() {
+        const name = document.getElementById('new-set-name').value.trim();
+        if (!name) { showToast('セット名を入力してくれ。'); return; }
+        if (newSetItems.length === 0) { showToast('食品を1つ以上追加してくれ。'); return; }
+        sets.push({ name, items: [...newSetItems] });
+        saveSets();
+        newSetItems = [];
+        document.getElementById('new-set-name').value = '';
+        renderNewSetItems();
+        renderSetManager();
+        renderSets();
+        const total = sets[sets.length - 1].items.reduce((s, i) => s + i.protein, 0);
+        showToast(`「${name}」（${Math.round(total * 10) / 10}g）を作成した。`);
+    }
+
+    function removeSet(index) {
+        const name = sets[index].name;
+        if (!confirm(`セット「${name}」を削除する。よいな？`)) return;
+        sets.splice(index, 1);
+        saveSets();
+        renderSetManager();
+        renderSets();
+        showToast(`「${name}」を削除した。`);
+    }
+
+    /* ========================================
+       History
+    ======================================== */
+    function renderHistory() {
+        const allLogs = JSON.parse(localStorage.getItem('proteinLogs') || '{}');
+        const container = document.getElementById('history-list');
+        const dates = Object.keys(allLogs).sort().reverse();
+
+        if (dates.length === 0) {
+            container.innerHTML = '<div class="log-empty">まだ記録がない。</div>';
+            return;
+        }
+
+        container.innerHTML = dates.slice(0, 30).map(date => {
+            const items = allLogs[date];
+            const total = items.reduce((s, i) => s + i.protein, 0);
+            const names = items.map(i => i.name).join('、');
+            const reached = total >= settings.targetMin;
+            return `
+                <div class="history-item">
+                    <div class="history-header">
+                        <span class="history-date">${formatDateShort(date)}</span>
+                        <span style="display:flex;align-items:center;gap:8px;">
+                            <span class="history-total" style="color:${reached ? 'var(--sage)' : 'var(--terracotta)'}">${Math.round(total * 10) / 10}g</span>
+                            <button class="log-item-remove" onclick="deleteHistory('${date}')">✕</button>
+                        </span>
+                    </div>
+                    <div class="history-items">${names}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function deleteHistory(date) {
+        if (!confirm(`${formatDateShort(date)} の記録を削除する。よいな？`)) return;
+        const allLogs = JSON.parse(localStorage.getItem('proteinLogs') || '{}');
+        delete allLogs[date];
+        localStorage.setItem('proteinLogs', JSON.stringify(allLogs));
+        // 今日の記録を消した場合はtodayLogも空にする
+        if (date === getJSTDate()) {
+            todayLog = [];
+            renderAll();
+        }
+        renderHistory();
+        showToast('記録を削除した。');
+    }
+
+    /* ========================================
+       CSV
+    ======================================== */
+    function exportCSV() {
+        const allLogs = JSON.parse(localStorage.getItem('proteinLogs') || '{}');
+        const dates = Object.keys(allLogs).sort();
+        if (dates.length === 0) { showToast('書き出すデータがない。'); return; }
+
+        const rows = [['日付','食品名','たんぱく質(g)','分類']];
+        dates.forEach(date => {
+            allLogs[date].forEach(item => {
+                rows.push([date, item.name, item.protein, item.meal || '']);
+            });
+        });
+
+        const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `protein-log-${getJSTDate()}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast(`${dates.length}日分のデータを書き出した。`);
+    }
+
+    function importCSV(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const lines = e.target.result.split('\n').map(l => l.trim()).filter(l => l);
+                if (lines.length < 2) { showToast('データが空だ。'); return; }
+                const allLogs = JSON.parse(localStorage.getItem('proteinLogs') || '{}');
+                let count = 0;
+                lines.slice(1).forEach(line => {
+                    const cols = [];
+                    let cur = '', inQ = false;
+                    for (let i = 0; i < line.length; i++) {
+                        if (line[i] === '"') { inQ = !inQ; continue; }
+                        if (line[i] === ',' && !inQ) { cols.push(cur); cur = ''; continue; }
+                        cur += line[i];
+                    }
+                    cols.push(cur);
+                    const [date, name, protein, meal] = cols;
+                    if (!date || !name) return;
+                    if (!allLogs[date]) allLogs[date] = [];
+                    allLogs[date].push({ name, protein: parseFloat(protein) || 0, meal: meal || '' });
+                    count++;
+                });
+                localStorage.setItem('proteinLogs', JSON.stringify(allLogs));
+                todayLog = allLogs[getJSTDate()] || [];
+                renderAll();
+                renderHistory();
+                showToast(`${count}件のデータを読み込んだ。`);
+            } catch (err) { showToast('読み込みに失敗した。'); }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    /* ========================================
+       Tabs
+    ======================================== */
+    function switchTab(name) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        const labels = { today: '今日', history: '記録', settings: '設定' };
+        document.querySelectorAll('.tab').forEach(t => {
+            if (t.textContent === labels[name]) t.classList.add('active');
+        });
+        document.getElementById(`${name}-panel`).classList.add('active');
+        if (name === 'history') renderHistory();
+        if (name === 'settings') { renderFoodManager(); renderSetManager(); }
+    }
+
+    /* ========================================
+       SW
+    ======================================== */
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(() => {});
+        });
+    }
+
+    /* ========================================
+       Init
+    ======================================== */
+    loadData();
+    renderAll();
+    setupScrollObserver();
+</script>
+</body>
+</html>
