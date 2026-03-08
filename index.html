@@ -73,13 +73,13 @@
         .greeting {
             text-align: center;
             padding: 14px 16px;
-            margin-bottom: 16px;
+            margin-bottom: 6px;
         }
         .greeting-text {
             font-family: 'Noto Serif JP', serif;
             font-size: 13px;
             color: var(--text-secondary);
-            line-height: 1.9;
+            line-height: 1.2;
         }
 
         /* ===== Progress Ring ===== */
@@ -133,6 +133,8 @@
         }
         .progress-comment {
             font-size: 12px;
+            font-family: 'Noto Serif JP', serif;
+
             color: var(--text-secondary);
             margin-top: 12px;
             min-height: 20px;
@@ -293,7 +295,8 @@
             border-radius: 12px;
             padding: 20px;
             margin-top: 20px;
-            text-align: center;
+            text-align: left;
+            white-space: normal; /* テキストが折り返されるようにする */
             box-shadow: 0 2px 8px var(--card-shadow);
         }
         .summary-text {
@@ -437,7 +440,7 @@
         /* ===== Toast ===== */
         .toast {
             position: fixed;
-            top: 20px;
+            top: 50px;
             left: 50%;
             transform: translateX(-50%);
             max-width: 88%;
@@ -520,6 +523,10 @@
         <h1>たんぱく質</h1>
     </div>
 
+       <div class="greeting">
+            <div class="greeting-text" id="greeting"></div>
+        </div>
+
     <div class="tabs">
         <button class="tab active" onclick="switchTab('today')">今日</button>
         <button class="tab" onclick="switchTab('history')">記録</button>
@@ -537,9 +544,7 @@
             </div>
         </div>
 
-        <div class="greeting">
-            <div class="greeting-text" id="greeting"></div>
-        </div>
+ 
 
         <div class="progress-section">
             <div class="progress-ring-wrap">
@@ -648,7 +653,7 @@
                         <option value="夕食">夕食</option>
                         <option value="運動後">運動後</option>
                     </select>
-                    <button class="btn btn-sage" onclick="addPresetFood()" style="flex:none;">追加</button>
+                    <button class="btn btn-sage" onclick="addPresetFood()" style="width:64px;flex:none;"">追加</button>
                 </div>
             </div>
         </div>
