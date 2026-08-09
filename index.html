@@ -657,42 +657,92 @@
        Default Foods
     ======================================== */
     const DEFAULT_FOODS = [
-        { name: 'ゆで卵', protein: 6, meal: '朝食' },
-        { name: '食パン（全粒粉）', protein: 4, meal: '朝食' },
-        { name: '牛乳 200ml', protein: 6.6, meal: '朝食' },
-        { name: '豆乳 200ml', protein: 7, meal: '朝食' },
+        { name: 'ゆで卵', protein: 6.5, meal: '朝食' },
+        { name: '大きいスライスチーズ', protein: 3.7, meal: '朝食'},
+        { name: '全粒粉入り食パン(5枚切)', protein: 6.9, meal: '朝食' },
+        { name: '全粒粉入り食パン(6枚切)', protein: 5.8, meal: '朝食' },
+        { name: '黒すりごま(大さじ1・9g)', protein: 1.8, meal: '朝食' },
+        { name: 'オートミール(30g)', protein: 4.1, meal: '朝食' },
+        { name: 'ホワイトチアシード(小さじ1/2・2.5g)', protein: 0.6, meal: '朝食' },
+        { name: '牛乳(あじわい便り)(60ml)', protein: 3.1, meal: '朝食' },
+      { name: 'スゴイダイズ(200ml)', protein: 6.2, meal: '朝食' },
+        { name: '純ココア(5g)', protein: 1.2, meal: '朝食' },
+        { name: 'ヨーグルト（脂肪0）(30g)', protein: 1.2, meal: '朝食' },
 
-        { name: '昼プロテイン', protein: 25, meal: '昼食' },
+        { name: 'SUNSTYLE PREMIUMソイプロテイン(21g)', protein: 17.5, meal: '昼食' },
+        { name: 'よつ葉 脱脂粉乳(15g)', protein: 5.3, meal: '昼食' },
+        { name: '富澤商店 北海道脱脂粉乳(15g)', protein: 5.3, meal: '昼食' },
+        { name: '純ココア(5g)', protein: 1.2, meal: '昼食' },
         { name: 'みかん', protein: 0.5, meal: '昼食' },
-        { name: 'デーツ+プルーン', protein: 0.5, meal: '昼食' },
+        { name: 'オートミール(30g)', protein: 4.1, meal: '昼食' },
 
-        { name: 'ヨーグルト', protein: 3.5, meal: '補食' },
+        { name: 'ヨーグルト(LG21)', protein: 4, meal: '補食' },
+        { name: 'ヨーグルト(R-1)', protein: 4, meal: '補食' },
         { name: 'アーモンド 5粒', protein: 1, meal: '補食' },
 
-        { name: '豆腐 半丁', protein: 9.6, meal: '夕食' },
-        { name: '納豆 1パック', protein: 8, meal: '夕食' },
         { name: '夕食：肉/魚メイン', protein: 20, meal: '夕食' },
         { name: '夕食：丼/麺', protein: 12, meal: '夕食' },
         { name: '夕食：揚げ物', protein: 15, meal: '夕食' },
+        { name: '夕食：揚げ物', protein: 15, meal: '夕食' },
+        { name: 'ご飯(150g)', protein: 3.8, meal: '夕食' },
+        { name: '納豆 1パック(ミツカン金のつぶ)(40g)', protein: 6.5, meal: '夕食' },
+        { name: 'サラダチキン(60g)', protein: 8.9, meal: '夕食' },
+        { name: '豆腐の味噌汁', protein: 4, meal: '夕食' },
+        { name: '大豆とひじきの煮物', protein: 5, meal: '夕食' },
+        { name: 'さとの雪 絹ごし豆腐(175g)', protein: 9.6, meal: '夕食' },
+        { name: 'さとの雪 絹ごし豆腐1/2(約87.5g)', protein: 4.8, meal: '夕食' },
+
 
         { name: 'ザバス ウェイトダウン', protein: 20, meal: '運動後' },
         { name: 'ザバス エリート', protein: 20, meal: '運動後' },
+        { name: 'SUNSTYLE PREMIUMソイプロテイン(21g)', protein: 17.5, meal: '運動後' },
+        { name: '牛乳(あじわい便り)(250ml)', protein: 12.8, meal: '運動後' },
     ];
 
     const DEFAULT_SETS = [
         {
-            name: '朝食セット',
+            name: '朝食セット(パン/5枚切)',
             items: [
-                { name: 'ゆで卵', protein: 6, meal: '朝食' },
-                { name: '食パン（全粒粉）', protein: 4, meal: '朝食' },
-                { name: '牛乳 200ml', protein: 6.6, meal: '朝食' },
+        { name: 'ゆで卵', protein: 6.5, meal: '朝食' },
+        { name: '大きいスライスチーズ', protein: 3.7, meal: '朝食'},
+        { name: '黒すりごま(大さじ1・9g)', protein: 1.8, meal: '朝食' },
+        { name: '食パン（全粒粉入り）5枚切', protein: 6.9, meal: '朝食' },
+        { name: 'スゴイダイズ(200ml)', protein: 6.2, meal: '朝食' },
+            ]
+        },
+        {
+            name: '朝食セット(オーバーナイトオーツ)',
+            items: [
+        { name: 'ゆで卵', protein: 6.5, meal: '朝食' },
+        { name: 'オートミール(30g)', protein: 4.1, meal: '朝食' },
+        { name: '黒すりごま(大さじ1・9g)', protein: 1.8, meal: '朝食' },
+        { name: 'ホワイトチアシード(小さじ1/2・2.5g)', protein: 0.6, meal: '朝食' },
+        { name: '牛乳(あじわい便り)(60ml)', protein: 3.1, meal: '朝食' },
+        { name: '純ココア(5g)', protein: 1.2, meal: '朝食' },
+        { name: 'ヨーグルト（脂肪0）(30g)', protein: 1.2, meal: '朝食' },
+        { name: 'スゴイダイズ(200ml)', protein: 6.2, meal: '朝食' },
             ]
         },
         {
             name: '昼食セット',
             items: [
-                { name: '昼プロテイン', protein: 25, meal: '昼食' },
-                { name: 'みかん', protein: 0.5, meal: '昼食' },
+        { name: 'SUNSTYLE PREMIUMソイプロテイン(21g)', protein: 17.5, meal: '昼食' },
+        { name: 'よつ葉 脱脂粉乳(15g)', protein: 5.3, meal: '昼食' },
+        { name: '純ココア(5g)', protein: 1.2, meal: '昼食' },
+            ]
+        },
+        {
+            name: '補食セット',
+            items: [
+        { name: 'ヨーグルト(LG21)', protein: 4, meal: '補食' },
+        { name: 'アーモンド 5粒', protein: 1, meal: '補食' },
+            ]
+        },
+        {
+            name: 'プロテインセット',
+            items: [
+        { name: 'SUNSTYLE PREMIUMソイプロテイン(21g)', protein: 17.5, meal: '運動後' },
+        { name: '牛乳(あじわい便り)(250ml)', protein: 12.8, meal: '運動後' },
             ]
         },
     ];
@@ -777,7 +827,7 @@
         const now = new Date();
         const h = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Tokyo' })).getHours();
         if (h >= 5 && h < 12) return 'morning';
-        if (h >= 12 && h < 17) return 'afternoon';
+        if (h >= 13 && h < 17) return 'afternoon';
         if (h >= 17 && h < 20) return 'evening';
         return 'night';
     }
